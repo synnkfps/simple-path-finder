@@ -102,6 +102,11 @@ def moveRandomly():
         print(f'Predicted Distance X from player to target: {predictDistanceX}')
         print(f'Predicted Distance Y from player to target: {predictDistanceY}')
 
+        #
+        # TODO: Predict into all directions (for i in availablePositions loop) and calculate which move got the closest result
+        #       Then actually move the player to the closest result's direction
+        #
+
     think()
     print('-'*30)
 
