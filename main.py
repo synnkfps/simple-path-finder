@@ -1,4 +1,4 @@
-import random
+import random, time
 # Map
 map = []
 
@@ -59,6 +59,33 @@ def getTargetPos():
 # print(getPlayerPos())
 # print(getTargetPos())
 
+def check():
+    playerX, playerY = getPlayerPos()
+    targetX, targetY = getTargetPos()
+
+    finished = False
+
+    if playerX == targetX and playerY == targetY:
+        finished = True
+
+    return finished
+
+def movePlayer(x, y):
+    playerX, playerY = getPlayerPos()
+    targetX, targetY = getTargetPos()
+
+    try:
+        if map[playerY+y][playerX+x] == 2:
+            exit()
+
+        map[playerY][playerX], map[playerY+y][playerX+x] = map[playerY+y][playerX+x], map[playerY][playerX]
+
+        print('Moved player!')
+        for i in map:
+            print(i)
+    except:
+        pass
+
 def moveRandomly():
     availablePositions = ['up', 'down', 'left', 'right']
 
@@ -90,9 +117,15 @@ def moveRandomly():
     def think(): # think in a new position
         randomThinking = random.choice(availablePositions)
         print(f'> Thought in {randomThinking}, which has {predictCharacters[randomThinking]} in it\'s position')
+        if predictCharacters[randomThinking] == 2:
+            print('found')
+            for i in map:
+                print(i)
+            exit()
 
-        predictDistanceX = 0
-        predictDistanceY = 0
+        # initial placeholders
+        predictDistanceX = distanceX
+        predictDistanceY = distanceY
 
         if randomThinking == 'up': predictDistanceY = targetY-(playerY-1)
         if randomThinking == 'down': predictDistanceY = targetY-(playerY+1)
@@ -102,11 +135,33 @@ def moveRandomly():
         print(f'Predicted Distance X from player to target: {predictDistanceX}')
         print(f'Predicted Distance Y from player to target: {predictDistanceY}')
 
+        worthX = abs(predictDistanceX)<abs(distanceX)
+        worthY = abs(predictDistanceY)<abs(distanceY)
+
+        if worthX:
+            print('moving to X because its worth it moving')
+            if randomThinking == 'left':
+                movePlayer(-1, 0)
+            if randomThinking == 'right':
+                movePlayer(+1, 0)
+        if worthY:
+            print('moving to Y because its worth it moving')
+            if randomThinking == 'up':
+                movePlayer(0, -1)
+            if randomThinking == 'down':
+                movePlayer(0, +1)
         #
         # TODO: Predict into all directions (for i in availablePositions loop) and calculate which move got the closest result
         #       Then actually move the player to the closest result's direction
         #
 
+        print(availablePositions)
+        if check():
+            exit()
+
+        time.sleep(1)
+        think()
+        
     think()
     print('-'*30)
 
